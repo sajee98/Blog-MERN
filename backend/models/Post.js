@@ -10,7 +10,9 @@ const postSchema = new mongoose.Schema({
         required: true
     },
     category: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category', // Reference to the Category model
+        // This allows you to link posts to categories
         required: true
     },
     author: {

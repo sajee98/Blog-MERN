@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const postRoutes = require('./routes/post'); // Importing post routes
+const CategoryRoutes = require('./routes/categories'); // Importing category routes
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +20,7 @@ mongoose.connect('mongodb://localhost:27017/Blog')
 
 // Routes
 app.use('/api/posts', postRoutes); // Using post routes
+app.use('/api/categories', CategoryRoutes); // Using category routes
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

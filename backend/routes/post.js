@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Post = require('../models/Post'); 
+const Category = require('../models/Category');
+const Post = require('../models/Post');
 
 
 
@@ -37,8 +38,8 @@ router.post('/', async (req, res) => {
         content: req.body.content,
         category: req.body.category,
         author: req.body.author,
-        image: req.body.image,  
-        createdAt: Date.now(), 
+        image: req.body.image,
+        createdAt: Date.now(),
     });
 
     try {
@@ -53,7 +54,7 @@ router.post('/', async (req, res) => {
 //Update a post api
 router.put('/:id', async (req, res) => {
     try {
-        const post = await Post.findByIdAndUpdate(req.params.id) 
+        const post = await Post.findByIdAndUpdate(req.params.id)
         if (!post) {
             return res.status(404).json({ message: 'Post not found' });
         }
@@ -66,7 +67,7 @@ router.put('/:id', async (req, res) => {
 
         const updatedPost = await post.save();
         res.status(200).json(updatedPost);
-       
+
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -80,12 +81,31 @@ router.delete('/:id', async (req, res) => {
         if (!post) {
             return res.status(404).json({ message: 'Post not found' });
         }
-    //    await Post.deleteOne({ _id: req.params.id });
+        //    await Post.deleteOne({ _id: req.params.id });
         await Post.findByIdAndDelete(post._id);
         res.status(200).json({ message: 'Post deleted successfully' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+})
+
+//fetch post by categories ID
+
+router.get('/category/:categoryId', async (req, res) => {
+    try {
+        const categoryId = req.params.categoryId;
+
+        //validate categoryId
+        const categorExists = await Category.findById(categoryId);
+        if (!categorExists) {
+            return res.status(404).json({ message: 'Category not found' });
+        }
+        //fetch post
+        const posts = await Post.find({ category: categoryId }).populate('category');
+        res.status(200).json(posts);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
 
 module.exports = router;
